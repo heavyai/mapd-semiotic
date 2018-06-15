@@ -9,6 +9,7 @@
     "react-redux": "^5.0.7",
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
+    "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^5.1.1",
     "semiotic": "^1.11.9",
     "single-line-string": "^0.0.2"
