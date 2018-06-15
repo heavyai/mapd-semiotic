@@ -1,10 +1,6 @@
 // eslint-disable-next-line
 import MapDCon from '@mapd/connector/dist/browser-connector'
 
-let connection = null
-
-console.log(process.env.REACT_APP_MAPD_HOST)
-
 function establishConnection() {
   const connector = new window.MapdCon()
   return new Promise((resolve, reject) => {
@@ -44,7 +40,7 @@ async function getConnectionStatus(con) {
   }
 }
 
-async function queryMapd(query) {
+async function queryMapd(connection, query) {
   try {
     let result = await connection.queryAsync(query, {})
     return result
@@ -53,14 +49,8 @@ async function queryMapd(query) {
   }
 }
 
-// store the connection once we've established it
-function saveConnectionObj(con) {
-  connection = con
-}
-
 export {
   getConnection,
   getConnectionStatus,
-  queryMapd,
-  saveConnectionObj
+  queryMapd
 }

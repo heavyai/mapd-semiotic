@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { establishConnection } from './actions'
 import './styles/App.css';
-import { getConnection, saveConnectionObj } from './services/connector'
 
 class App extends Component {
+  static propTypes = {
+    isConnecting: PropTypes.bool,
+    connection: PropTypes.shape({}),
+    error: PropTypes.shape({}),
+    dispatch: PropTypes.func
+  }
+
   componentDidMount() {
-    getConnection()
-      .then(con => {
-        saveConnectionObj(con)
-      })
-      .catch(error => {
-        throw Error(`Connection unsuccessful, message: ${error.message}`)
-      })
+    this.props.dispatch(establishConnection())
   }
 
   render() {
@@ -24,4 +27,13 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = ({ connection }) => {
+  const { isConnecting, mapdCon, error } = connection
+  return {
+    isConnecting,
+    mapdCon,
+    error
+  }
+}
+
+export default connect(mapStateToProps)(App)
