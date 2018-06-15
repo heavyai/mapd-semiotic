@@ -1,5 +1,23 @@
 # MapD Semiotic Demo
 
+## Develop
+
+### Environment Variables
+You'll need to have a `.env` file in the root of this repo which contains the MapD server credentials as follows:
+
+```bash
+REACT_APP_MAPD_HOST="<hostname>"
+REACT_APP_MAPD_PROTOCOL="<protocol>"
+REACT_APP_MAPD_PORT="<port>"
+REACT_APP_MAPD_USER="<user name>"
+REACT_APP_MAPD_DB="<database name>"
+REACT_APP_MAPD_PW="<password>"
+```
+
+You may do the following to get started: `cp sample.env .env`
+
+## Create React App Info
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
