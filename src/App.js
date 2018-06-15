@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
 import './styles/App.css';
+import { getConnection, saveConnectionObj } from './services/connector'
 
 class App extends Component {
+  componentDidMount() {
+    getConnection()
+      .then(con => {
+        saveConnectionObj(con)
+      })
+      .catch(error => {
+        throw Error(`Connection unsuccessful, message: ${error.message}`)
+      })
+  }
+
   render() {
     return (
       <div className="App">
