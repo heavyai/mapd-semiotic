@@ -8,7 +8,7 @@ import { curveCardinal } from 'd3-shape'
 import { format } from 'd3-format'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 
-import './LineChart.css'
+import '../styles/LineChart.css'
 
 // semiotic expects data in a certain format
 const formatData = data => {
