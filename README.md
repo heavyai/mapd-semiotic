@@ -1,4 +1,5 @@
 # MapD Semiotic Demo
+Demo / Investigation of using the [Semiotic](https://emeeks.github.io/semiotic/#/) charting library with MapD.
 
 ## Develop
 
