@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import sls from 'single-line-string'
+import React, { Component } from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import sls from "single-line-string"
 
-import { establishConnection, fetchData } from '../actions'
-import { table } from '../common/config'
-import LineChart from '../components/LineChart'
-import '../styles/App.css';
+import { establishConnection, fetchData } from "../actions"
+import { table } from "../common/config"
+import LineChart from "../components/LineChart"
+import CountWidget from "../components/CountWidget"
+import "../styles/App.css"
 
 class App extends Component {
   static propTypes = {
     isConnecting: PropTypes.bool,
-    isFetching: PropTypes.bool,
     connection: PropTypes.shape({}),
+    data: PropTypes.shape({}),
     dispatch: PropTypes.func,
-    rows: PropTypes.arrayOf(PropTypes.shape({}))
   }
 
   queryLineChart = sls`
@@ -31,6 +31,8 @@ class App extends Component {
 
   queryCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
 
+  queryTotal = `SELECT count(*) AS val FROM ${table}`
+
   componentDidMount() {
     // create and save the connection to the mapd db
     this.props.dispatch(establishConnection())
@@ -42,11 +44,15 @@ class App extends Component {
     // fetch data from mapd db
     if (mapdCon && !isConnecting) {
       if (!data.line.rows && !data.line.isFetching) {
-        dispatch(fetchData(mapdCon, this.queryLineChart, { chartId: 'line' }))
+        dispatch(fetchData(mapdCon, this.queryLineChart, { chartId: "line" }))
       }
 
       if (!data.count.rows && !data.count.isFetching) {
-        dispatch(fetchData(mapdCon, this.queryCount, { chartId: 'count' }))
+        dispatch(fetchData(mapdCon, this.queryCount, { chartId: "count" }))
+      }
+
+      if (!data.total.rows && !data.total.isFetching) {
+        dispatch(fetchData(mapdCon, this.queryTotal, { chartId: "total" }))
       }
     }
   }
@@ -56,10 +62,16 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">Welcome to MapD Semiotic</h1>
+          <CountWidget
+            count={this.props.data.count.rows}
+            total={this.props.data.total.rows}
+          />
         </header>
-        { this.props.data.line.rows && <LineChart data={this.props.data.line.rows} /> }
+        {this.props.data.line.rows && (
+          <LineChart data={this.props.data.line.rows} />
+        )}
       </div>
-    );
+    )
   }
 }
 
