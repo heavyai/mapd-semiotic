@@ -29,7 +29,7 @@ class App extends Component {
     GROUP BY key0, key1
     ORDER BY key0, key1`
 
-  queryRowCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
+  queryCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
 
   componentDidMount() {
     // create and save the connection to the mapd db
@@ -37,10 +37,17 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    const { dispatch, mapdCon, isConnecting, isFetching, rows } = this.props
+    const { dispatch, mapdCon, isConnecting, data } = this.props
 
-    if (mapdCon && !isConnecting && !rows && !isFetching) {
-      dispatch(fetchData(mapdCon, this.queryLineChart, { chartId: 'line' }))
+    // fetch data from mapd db
+    if (mapdCon && !isConnecting) {
+      if (!data.line.rows && !data.line.isFetching) {
+        dispatch(fetchData(mapdCon, this.queryLineChart, { chartId: 'line' }))
+      }
+
+      if (!data.count.rows && !data.count.isFetching) {
+        dispatch(fetchData(mapdCon, this.queryCount, { chartId: 'count' }))
+      }
     }
   }
 
@@ -50,20 +57,18 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Welcome to MapD Semiotic</h1>
         </header>
-        { this.props.rows && <LineChart data={this.props.rows} /> }
+        { this.props.data.line.rows && <LineChart data={this.props.data.line.rows} /> }
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ connection, data: { line } }) => {
+const mapStateToProps = ({ connection, data }) => {
   const { isConnecting, mapdCon } = connection
-  const { isFetching, rows } = line
   return {
     isConnecting,
-    isFetching,
     mapdCon,
-    rows
+    data
   }
 }
 

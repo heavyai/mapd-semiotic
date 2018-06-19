@@ -8,7 +8,7 @@ const stateTemplate = {
 
 const defaultState = {
   line: { ...stateTemplate },
-  counter: { ...stateTemplate }
+  count: { ...stateTemplate }
 }
 
 export default function(state = defaultState, action) {
