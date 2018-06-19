@@ -1,9 +1,14 @@
 import { REQUEST_DATA } from "../common/actionTypes"
 
-const defaultState = {
+const stateTemplate = {
   isFetching: false,
   rows: null,
   error: null
+}
+
+const defaultState = {
+  line: { ...stateTemplate },
+  counter: { ...stateTemplate }
 }
 
 export default function(state = defaultState, action) {
@@ -11,21 +16,30 @@ export default function(state = defaultState, action) {
     case `${REQUEST_DATA}_PENDING`:
       return {
         ...state,
-        isFetching: true
+        [action.meta.chartId]: {
+          ...state[action.meta.chartId],
+          isFetching: true
+        }
       }
 
     case `${REQUEST_DATA}_FULFILLED`:
       return {
         ...state,
-        isFetching: false,
-        rows: action.payload
+        [action.meta.chartId]: {
+          ...state[action.meta.chartId],
+          isFetching: false,
+          rows: action.payload
+        }
       }
 
     case `${REQUEST_DATA}_REJECTED`:
       return {
         ...state,
-        isFetching: false,
-        error: action.error
+        [action.meta.chartId]: {
+          ...state[action.meta.chartId],
+          isFetching: false,
+          error: action.error
+        }
       }
 
     default:

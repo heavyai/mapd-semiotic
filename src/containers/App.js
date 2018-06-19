@@ -17,7 +17,7 @@ class App extends Component {
     rows: PropTypes.arrayOf(PropTypes.shape({}))
   }
 
-  query = sls`
+  queryLineChart = sls`
     SELECT date_trunc(month, dep_timestamp) as key0,
     CASE
       WHEN origin IN ('ORD','ATL','DFW','LAX','PHX')
@@ -29,16 +29,18 @@ class App extends Component {
     GROUP BY key0, key1
     ORDER BY key0, key1`
 
+  queryRowCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
+
   componentDidMount() {
     // create and save the connection to the mapd db
     this.props.dispatch(establishConnection())
   }
 
   componentDidUpdate() {
-    const { dispatch, mapdCon, isConnecting, rows } = this.props
+    const { dispatch, mapdCon, isConnecting, isFetching, rows } = this.props
 
-    if (mapdCon && !isConnecting && !rows) {
-      dispatch(fetchData(mapdCon, this.query))
+    if (mapdCon && !isConnecting && !rows && !isFetching) {
+      dispatch(fetchData(mapdCon, this.queryLineChart, { chartId: 'line' }))
     }
   }
 
@@ -54,9 +56,9 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ connection, data }) => {
+const mapStateToProps = ({ connection, data: { line } }) => {
   const { isConnecting, mapdCon } = connection
-  const { isFetching, rows } = data
+  const { isFetching, rows } = line
   return {
     isConnecting,
     isFetching,
