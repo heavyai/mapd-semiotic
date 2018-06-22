@@ -1,12 +1,15 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
+import { timeFormat } from 'd3-time-format'
 
 import { sendQuery } from "../actions"
 import * as queries from "../common/queries"
 import LineChart from "../components/LineChart"
 import CountWidget from "../components/CountWidget"
 import "../styles/App.css"
+
+const dateFormatter = timeFormat('%Y-%m-%d %H:%M:%S')
 
 class App extends Component {
   static propTypes = {
@@ -31,6 +34,24 @@ class App extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { dispatch, line } = this.props
+
+    if (line.brush && line.brush.length) {
+      let newQueryTotal = `${queries.queryTotal}`
+
+      if (!prevProps.line.brush) {
+        newQueryTotal = `${newQueryTotal} WHERE (dep_timestamp >= TIMESTAMP(0) '${dateFormatter(line.brush[0])}' AND dep_timestamp <= TIMESTAMP(0) '${dateFormatter(line.brush[1])}')`
+        dispatch(sendQuery(newQueryTotal, { chartId: "count" }))
+
+      } else if (prevProps.line.brush && (line.brush[0] !== prevProps.line.brush[0] || line.brush[1] !== prevProps.line.brush[1])) {
+        newQueryTotal = `${newQueryTotal} WHERE (dep_timestamp >= TIMESTAMP(0) '${dateFormatter(line.brush[0])}' AND dep_timestamp <= TIMESTAMP(0) '${dateFormatter(line.brush[1])}')`
+        dispatch(sendQuery(newQueryTotal, { chartId: "count" }))
+      }
+
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -52,6 +73,6 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ data }) => ({ data })
+const mapStateToProps = ({ data, line }) => ({ data, line })
 
 export default connect(mapStateToProps)(App)

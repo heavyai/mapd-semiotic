@@ -96,7 +96,7 @@ const LineChart = ({ data, dispatch }) => {
           during: throttle(onBrushMove, 100),
           end: onBrushEnd,
           brush: "xBrush",
-          extent: []
+          extent: [null, null]
         }}
       />
     </div>

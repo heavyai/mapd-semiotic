@@ -5,7 +5,7 @@ import {
 } from "../common/actionTypes"
 
 const defaultState = {
-  brush: []
+  brush: null
 }
 
 // note: could use a single action for updating the brush data here, but may
