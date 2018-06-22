@@ -1,20 +1,19 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
-import { timeFormat } from 'd3-time-format'
 
 import { sendQuery } from "../actions"
 import * as queries from "../common/queries"
+import dataLayer from "../services/dataLayer"
+
+import "../styles/App.css"
 import LineChart from "../components/LineChart"
 import CountWidget from "../components/CountWidget"
-import "../styles/App.css"
-
-const dateFormatter = timeFormat('%Y-%m-%d %H:%M:%S')
 
 class App extends Component {
   static propTypes = {
     data: PropTypes.shape({}),
-    dispatch: PropTypes.func,
+    dispatch: PropTypes.func
   }
 
   componentDidMount() {
@@ -35,21 +34,29 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch, line } = this.props
+    const { line } = this.props
 
     if (line.brush && line.brush.length) {
-      let newQueryTotal = `${queries.queryTotal}`
 
       if (!prevProps.line.brush) {
-        newQueryTotal = `${newQueryTotal} WHERE (dep_timestamp >= TIMESTAMP(0) '${dateFormatter(line.brush[0])}' AND dep_timestamp <= TIMESTAMP(0) '${dateFormatter(line.brush[1])}')`
-        dispatch(sendQuery(newQueryTotal, { chartId: "count" }))
-
-      } else if (prevProps.line.brush && (line.brush[0] !== prevProps.line.brush[0] || line.brush[1] !== prevProps.line.brush[1])) {
-        newQueryTotal = `${newQueryTotal} WHERE (dep_timestamp >= TIMESTAMP(0) '${dateFormatter(line.brush[0])}' AND dep_timestamp <= TIMESTAMP(0) '${dateFormatter(line.brush[1])}')`
-        dispatch(sendQuery(newQueryTotal, { chartId: "count" }))
+        this.filterTotal(line.brush)
+      } else if (
+        prevProps.line.brush &&
+        (line.brush[0] !== prevProps.line.brush[0] ||
+          line.brush[1] !== prevProps.line.brush[1])
+      ) {
+        this.filterTotal(line.brush)
       }
 
     }
+  }
+
+  filterTotal = brush => {
+    const filterObj = dataLayer({ dateRange: brush })
+    const newQueryTotal = `${queries.queryTotal} WHERE ${
+      filterObj.dateFilterStr
+    }`
+    this.props.dispatch(sendQuery(newQueryTotal, { chartId: "count" }))
   }
 
   render() {
