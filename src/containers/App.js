@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import sls from "single-line-string"
 
-import { establishConnection, fetchData } from "../actions"
+import { sendQuery } from "../actions"
 import { table } from "../common/config"
 import LineChart from "../components/LineChart"
 import CountWidget from "../components/CountWidget"
@@ -11,12 +11,11 @@ import "../styles/App.css"
 
 class App extends Component {
   static propTypes = {
-    isConnecting: PropTypes.bool,
-    connection: PropTypes.shape({}),
     data: PropTypes.shape({}),
     dispatch: PropTypes.func,
   }
 
+  // TO DO: mv queries to separate module & refactor to accept where clause filters
   queryLineChart = sls`
     SELECT date_trunc(month, dep_timestamp) as key0,
     CASE
@@ -29,31 +28,33 @@ class App extends Component {
     GROUP BY key0, key1
     ORDER BY key0, key1`
 
+  queryScatterPlot = sls`
+    SELECT depdelay as x,
+    arrdelay as y,
+    airtime as size,
+    carrier_name as color
+    FROM ${table}
+    LIMIT 200000
+  `
+
   queryCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
 
   queryTotal = `SELECT count(*) AS val FROM ${table}`
 
   componentDidMount() {
-    // create and save the connection to the mapd db
-    this.props.dispatch(establishConnection())
-  }
+    const { dispatch, data } = this.props
 
-  componentDidUpdate() {
-    const { dispatch, mapdCon, isConnecting, data } = this.props
+    // kick off network requests for requesting the charts data
+    if (!data.line.rows && !data.line.isFetching) {
+      dispatch(sendQuery(this.queryLineChart, { chartId: "line" }))
+    }
 
-    // fetch data from mapd db
-    if (mapdCon && !isConnecting) {
-      if (!data.line.rows && !data.line.isFetching) {
-        dispatch(fetchData(mapdCon, this.queryLineChart, { chartId: "line" }))
-      }
+    if (!data.count.rows && !data.count.isFetching) {
+      dispatch(sendQuery(this.queryCount, { chartId: "count" }))
+    }
 
-      if (!data.count.rows && !data.count.isFetching) {
-        dispatch(fetchData(mapdCon, this.queryCount, { chartId: "count" }))
-      }
-
-      if (!data.total.rows && !data.total.isFetching) {
-        dispatch(fetchData(mapdCon, this.queryTotal, { chartId: "total" }))
-      }
+    if (!data.total.rows && !data.total.isFetching) {
+      dispatch(sendQuery(this.queryTotal, { chartId: "total" }))
     }
   }
 
@@ -75,13 +76,6 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ connection, data }) => {
-  const { isConnecting, mapdCon } = connection
-  return {
-    isConnecting,
-    mapdCon,
-    data
-  }
-}
+const mapStateToProps = ({ data }) => ({ data })
 
 export default connect(mapStateToProps)(App)

@@ -1,4 +1,4 @@
-import { REQUEST_DATA } from "../common/actionTypes"
+import { SEND_QUERY } from "../common/actionTypes"
 
 const stateTemplate = {
   isFetching: false,
@@ -14,7 +14,7 @@ const defaultState = {
 
 export default function(state = defaultState, action) {
   switch(action.type) {
-    case `${REQUEST_DATA}_PENDING`:
+    case `${SEND_QUERY}_PENDING`:
       return {
         ...state,
         [action.meta.chartId]: {
@@ -23,7 +23,7 @@ export default function(state = defaultState, action) {
         }
       }
 
-    case `${REQUEST_DATA}_FULFILLED`:
+    case `${SEND_QUERY}_FULFILLED`:
       return {
         ...state,
         [action.meta.chartId]: {
@@ -33,7 +33,7 @@ export default function(state = defaultState, action) {
         }
       }
 
-    case `${REQUEST_DATA}_REJECTED`:
+    case `${SEND_QUERY}_REJECTED`:
       return {
         ...state,
         [action.meta.chartId]: {
