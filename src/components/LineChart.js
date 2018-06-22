@@ -7,8 +7,10 @@ import { extent } from 'd3-array'
 import { curveCardinal } from 'd3-shape'
 import { format } from 'd3-format'
 import { schemeCategory10 } from 'd3-scale-chromatic'
+import throttle from 'lodash.throttle'
 
 import '../styles/LineChart.css'
+import { lineBrushStart, lineBrushMove, lineBrushEnd } from "../actions/line"
 
 // semiotic expects data in a certain format
 const formatData = data => {
@@ -34,7 +36,7 @@ const formatData = data => {
 const dateFormatter = timeFormat('%b')
 const numberFormatter = format(".2s")
 
-const LineChart = ({ data }) => {
+const LineChart = ({ data, dispatch }) => {
   const airports = data.reduce((acc, cur) => {
     if (acc.indexOf(cur.key1) === -1 && cur.key1 !== "other") {
       acc.push(cur.key1)
@@ -43,6 +45,19 @@ const LineChart = ({ data }) => {
   }, [])
   const dataFormatted = formatData(data)
   const colorScale = scaleOrdinal(schemeCategory10).domain(airports)
+
+  // brush event handlers
+  function onBrushStart (dateRange) {
+    dispatch(lineBrushStart(dateRange))
+  }
+
+  function onBrushMove (dateRange) {
+    dispatch(lineBrushMove(dateRange))
+  }
+
+  function onBrushEnd (dateRange) {
+    dispatch(lineBrushEnd(dateRange))
+  }
 
   return (
     <div className="line-chart">
@@ -76,6 +91,13 @@ const LineChart = ({ data }) => {
             <p>Count: {d.val}</p>
             <p>Date: {dateFormatter(d.key0)}</p>
          </div>}
+        interaction={{
+          start: onBrushStart,
+          during: throttle(onBrushMove, 100),
+          end: onBrushEnd,
+          brush: "xBrush",
+          extent: []
+        }}
       />
     </div>
   )

@@ -42,7 +42,10 @@ class App extends Component {
           />
         </header>
         {this.props.data.line.rows && (
-          <LineChart data={this.props.data.line.rows} />
+          <LineChart
+            data={this.props.data.line.rows}
+            dispatch={this.props.dispatch}
+          />
         )}
       </div>
     )
