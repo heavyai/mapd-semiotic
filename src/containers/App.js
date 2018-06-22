@@ -1,10 +1,9 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
-import sls from "single-line-string"
 
 import { sendQuery } from "../actions"
-import { table } from "../common/config"
+import * as queries from "../common/queries"
 import LineChart from "../components/LineChart"
 import CountWidget from "../components/CountWidget"
 import "../styles/App.css"
@@ -15,46 +14,20 @@ class App extends Component {
     dispatch: PropTypes.func,
   }
 
-  // TO DO: mv queries to separate module & refactor to accept where clause filters
-  queryLineChart = sls`
-    SELECT date_trunc(month, dep_timestamp) as key0,
-    CASE
-      WHEN origin IN ('ORD','ATL','DFW','LAX','PHX')
-      THEN origin
-      ELSE 'other'
-    END as key1,
-    COUNT(*) AS val
-    FROM ${table}
-    GROUP BY key0, key1
-    ORDER BY key0, key1`
-
-  queryScatterPlot = sls`
-    SELECT depdelay as x,
-    arrdelay as y,
-    airtime as size,
-    carrier_name as color
-    FROM ${table}
-    LIMIT 200000
-  `
-
-  queryCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
-
-  queryTotal = `SELECT count(*) AS val FROM ${table}`
-
   componentDidMount() {
     const { dispatch, data } = this.props
 
     // kick off network requests for requesting the charts data
     if (!data.line.rows && !data.line.isFetching) {
-      dispatch(sendQuery(this.queryLineChart, { chartId: "line" }))
+      dispatch(sendQuery(queries.queryLineChart, { chartId: "line" }))
     }
 
     if (!data.count.rows && !data.count.isFetching) {
-      dispatch(sendQuery(this.queryCount, { chartId: "count" }))
+      dispatch(sendQuery(queries.queryCount, { chartId: "count" }))
     }
 
     if (!data.total.rows && !data.total.isFetching) {
-      dispatch(sendQuery(this.queryTotal, { chartId: "total" }))
+      dispatch(sendQuery(queries.queryTotal, { chartId: "total" }))
     }
   }
 
