@@ -9,7 +9,8 @@ const stateTemplate = {
 const defaultState = {
   line: { ...stateTemplate },
   count: { ...stateTemplate },
-  total: { ...stateTemplate }
+  total: { ...stateTemplate },
+  bar: { ...stateTemplate }
 }
 
 export default function(state = defaultState, action) {

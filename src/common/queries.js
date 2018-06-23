@@ -22,6 +22,34 @@ export const queryScatterPlot = sls`
   LIMIT 200000
 `
 
+export const queryStackedBar = sls`
+  SELECT dest_city AS key0,
+  CASE
+    WHEN carrier_name IN (
+      'Mesa Airlines',
+      'Atlantic Southeast Airlines',
+      'Piedmont Aviation',
+      'JetBlue Airways',
+      'AirTran Airways Corporation'
+    )
+    THEN carrier_name
+    ELSE 'undefined'
+  END AS key1,
+  avg(arrdelay) AS val
+  FROM ${table}
+  WHERE (
+    dest_city IN (
+      SELECT dest_city
+      FROM ${table}
+      GROUP BY dest_city
+      ORDER BY avg(arrdelay) DESC
+      LIMIT 100
+    )
+    OR dest_city IS NULL
+  )
+  GROUP BY key0, key1
+`
+
 export const queryCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
 
 export const queryTotal = `SELECT count(*) AS val FROM ${table}`

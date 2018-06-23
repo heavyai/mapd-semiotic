@@ -9,6 +9,7 @@ import dataLayer from "../services/dataLayer"
 import "../styles/App.css"
 import LineChart from "../components/LineChart"
 import CountWidget from "../components/CountWidget"
+import StackedBar from "../components/StackedBar"
 
 class App extends Component {
   static propTypes = {
@@ -19,7 +20,7 @@ class App extends Component {
   componentDidMount() {
     const { dispatch, data } = this.props
 
-    // kick off network requests for requesting the charts data
+    // kick off network requests for requesting each chart's data
     if (!data.line.rows && !data.line.isFetching) {
       dispatch(sendQuery(queries.queryLineChart, { chartId: "line" }))
     }
@@ -30,6 +31,10 @@ class App extends Component {
 
     if (!data.total.rows && !data.total.isFetching) {
       dispatch(sendQuery(queries.queryTotal, { chartId: "total" }))
+    }
+
+    if (!data.bar.rows && !data.bar.isFetching) {
+      dispatch(sendQuery(queries.queryStackedBar, { chartId: "bar" }))
     }
   }
 
@@ -74,6 +79,9 @@ class App extends Component {
             data={this.props.data.line.rows}
             dispatch={this.props.dispatch}
           />
+        )}
+        {this.props.data.bar.rows && (
+          <StackedBar data={this.props.data.bar.rows} />
         )}
       </div>
     )
