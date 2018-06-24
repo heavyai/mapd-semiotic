@@ -1,7 +1,7 @@
 import sls from 'single-line-string'
 import { table } from "../common/config"
 
-export const queryLineChart = sls`
+export const line = sls`
   SELECT date_trunc(month, dep_timestamp) as key0,
   CASE
     WHEN origin IN ('ORD','ATL','DFW','LAX','PHX')
@@ -13,7 +13,7 @@ export const queryLineChart = sls`
   GROUP BY key0, key1
   ORDER BY key0, key1`
 
-export const queryScatterPlot = sls`
+export const scatter = sls`
   SELECT depdelay as x,
   arrdelay as y,
   airtime as size,
@@ -22,7 +22,7 @@ export const queryScatterPlot = sls`
   LIMIT 200000
 `
 
-export const queryStackedBar = sls`
+export const bar = sls`
   SELECT dest_city AS key0,
   CASE
     WHEN carrier_name IN (
@@ -50,6 +50,6 @@ export const queryStackedBar = sls`
   GROUP BY key0, key1
 `
 
-export const queryCount = `SELECT count(*) AS val FROM ${table}` // to do: where clause
+export const count = `SELECT count(*) AS val FROM ${table}` // to do: where clause
 
-export const queryTotal = `SELECT count(*) AS val FROM ${table}`
+export const total = `SELECT count(*) AS val FROM ${table}`

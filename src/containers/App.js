@@ -20,21 +20,11 @@ class App extends Component {
   componentDidMount() {
     const { dispatch, data } = this.props
 
-    // kick off network requests for requesting each chart's data
-    if (!data.line.rows && !data.line.isFetching) {
-      dispatch(sendQuery(queries.queryLineChart, { chartId: "line" }))
-    }
-
-    if (!data.count.rows && !data.count.isFetching) {
-      dispatch(sendQuery(queries.queryCount, { chartId: "count" }))
-    }
-
-    if (!data.total.rows && !data.total.isFetching) {
-      dispatch(sendQuery(queries.queryTotal, { chartId: "total" }))
-    }
-
-    if (!data.bar.rows && !data.bar.isFetching) {
-      dispatch(sendQuery(queries.queryStackedBar, { chartId: "bar" }))
+    // kick off network requests for fetching each chart's data
+    for (let key in data) {
+      if (!data[key].rows && !data[key].isFetching) {
+        dispatch(sendQuery(queries[key], { chartId: `${key}` }))
+      }
     }
   }
 
@@ -44,24 +34,24 @@ class App extends Component {
     if (line.brush && line.brush.length) {
 
       if (!prevProps.line.brush) {
-        this.filterTotal(line.brush)
+        this.filterCount(line.brush)
       } else if (
         prevProps.line.brush &&
         (line.brush[0] !== prevProps.line.brush[0] ||
           line.brush[1] !== prevProps.line.brush[1])
       ) {
-        this.filterTotal(line.brush)
+        this.filterCount(line.brush)
       }
 
     }
   }
 
-  filterTotal = brush => {
+  filterCount = brush => {
     const filterObj = dataLayer({ dateRange: brush })
-    const newQueryTotal = `${queries.queryTotal} WHERE ${
+    const newQueryCount = `${queries.count} WHERE ${
       filterObj.dateFilterStr
     }`
-    this.props.dispatch(sendQuery(newQueryTotal, { chartId: "count" }))
+    this.props.dispatch(sendQuery(newQueryCount, { chartId: "count" }))
   }
 
   render() {
