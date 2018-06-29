@@ -12,6 +12,8 @@ import throttle from 'lodash.throttle'
 import '../styles/chart-default-styles.css'
 import { lineBrushStart, lineBrushMove, lineBrushEnd } from "../actions/line"
 
+window.schemeCategory10 = schemeCategory10
+
 // semiotic expects data in a certain format
 const formatData = data => {
   return data.reduce((acc, cur) => {
