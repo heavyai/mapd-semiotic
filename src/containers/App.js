@@ -71,7 +71,10 @@ class App extends Component {
           />
         )}
         {this.props.data.bar.rows && (
-          <StackedBar data={this.props.data.bar.rows} />
+          <StackedBar
+            data={this.props.data.bar.rows}
+            dispatch={this.props.dispatch}
+          />
         )}
       </div>
     )
