@@ -1,4 +1,5 @@
 /* styles specific to stacked bar here */
 .chart.stacked-bar {
-  
+  width: 700px;
+  overflow-x: auto;
 }
