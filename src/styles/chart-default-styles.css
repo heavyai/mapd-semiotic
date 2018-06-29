@@ -1,0 +1,47 @@
+/* styling shared by all charts */
+
+.chart text {
+  font-size: 11px;
+  fill: #333;
+}
+
+.chart .frame-title text {
+  font-size: 13px;
+}
+
+.chart .axis-baseline {
+  stroke: #333;
+  stroke-width: 0.5px;
+}
+
+.chart .tick-line {
+  stroke: #e2e2e2;
+  stroke-dasharray: 1, 2;
+}
+
+.chart .tooltip-content {
+  background: white;
+  border: 1px solid black;
+  color: black;
+  padding: 0;
+  z-index: 99;
+  min-width: 120px;
+  font-size: 12px;
+}
+
+.chart .tooltip-content:before {
+  background: white;
+  content: "";
+  padding: 0px;
+  transform: rotate(45deg);
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  z-index: 99;
+}
+
+.chart circle.frame-hover {
+  fill: none;
+  stroke: black;
+  r: 5;
+}

@@ -2,11 +2,13 @@ import React from "react"
 import PropTypes from "prop-types"
 import { OrdinalFrame } from "semiotic"
 
+import '../styles/chart-default-styles.css'
+
 const StackedBar = ({ data }) => {
   data = data.filter(d => d.key1 !== "undefined")
 
   return (
-    <div className="stacked-bar">
+    <div className="chart stacked-bar">
       <OrdinalFrame
         title={'Avg Arrdelay By Dest_city, Carrier_name'}
         size={[700, 400]}

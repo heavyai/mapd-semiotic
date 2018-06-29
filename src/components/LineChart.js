@@ -9,7 +9,7 @@ import { format } from 'd3-format'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import throttle from 'lodash.throttle'
 
-import '../styles/LineChart.css'
+import '../styles/chart-default-styles.css'
 import { lineBrushStart, lineBrushMove, lineBrushEnd } from "../actions/line"
 
 // semiotic expects data in a certain format
@@ -60,7 +60,7 @@ const LineChart = ({ data, dispatch }) => {
   }
 
   return (
-    <div className="line-chart">
+    <div className="chart line-chart">
       <XYFrame
         title={'Flights: Number of Records by Departure Date: ' + airports.join(" , ")}
         size={[700, 400]}
