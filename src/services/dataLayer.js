@@ -4,8 +4,10 @@ import sls from 'single-line-string'
 const dateFormatter = timeFormat('%Y-%m-%d %H:%M:%S')
 
 // parses input data into SQL bits to be used for filters in chart queries
-export default function({ dateRange }) {
+export default function({ dateRange, destCity, carrierName }) {
   let dateFilterStr = ''
+  let destCityFilterStr = ''
+  let carrierNameFilterStr = ''
 
   if (dateRange && Array.isArray(dateRange) && dateRange.length) {
     const [min, max] = dateRange
@@ -15,7 +17,17 @@ export default function({ dateRange }) {
     )`
   }
 
+  if (destCity && typeof destCity === "string") {
+    destCityFilterStr = `dest_city = '${destCity}'`
+  }
+
+  if (carrierName && typeof carrierName === "string") {
+    carrierNameFilterStr = `carrier_name = '${carrierName}'`
+  }
+
   return {
-    dateFilterStr
+    dateFilterStr,
+    destCityFilterStr,
+    carrierNameFilterStr
   }
 }

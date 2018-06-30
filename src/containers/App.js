@@ -14,7 +14,9 @@ import StackedBar from "../components/StackedBar"
 class App extends Component {
   static propTypes = {
     data: PropTypes.shape({}),
-    dispatch: PropTypes.func
+    dispatch: PropTypes.func,
+    line: PropTypes.shape({}),
+    bar: PropTypes.shape({})
   }
 
   componentDidMount() {
@@ -29,28 +31,64 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { line } = this.props
+    const { line, bar } = this.props
 
     if (line.brush && line.brush.length) {
-
       if (!prevProps.line.brush) {
-        this.filterCount(line.brush)
+        this.filterCount(line.brush, bar.selected.key0, bar.selected.key1)
       } else if (
         prevProps.line.brush &&
         (line.brush[0] !== prevProps.line.brush[0] ||
           line.brush[1] !== prevProps.line.brush[1])
       ) {
-        this.filterCount(line.brush)
+        this.filterCount(line.brush, bar.selected.key0, bar.selected.key1)
       }
+    }
 
+    if (
+      prevProps.bar.selected.key0 !== bar.selected.key0 ||
+      prevProps.bar.selected.key1 !== bar.selected.key1
+    ) {
+      this.filterCount(line.brush, bar.selected.key0, bar.selected.key1)
     }
   }
 
-  filterCount = brush => {
-    const filterObj = dataLayer({ dateRange: brush })
-    const newQueryCount = `${queries.count} WHERE ${
-      filterObj.dateFilterStr
-    }`
+  // updates data for the count widget
+  filterCount = (brush, city, carrier) => {
+    const filterStrings = dataLayer({
+      dateRange: brush,
+      destCity: city,
+      carrierName: carrier
+    })
+
+    let newQueryCount = `${queries.count}`
+    let hasFilters = false
+
+    for (let key in filterStrings) {
+      if (filterStrings[key] && filterStrings[key].length) {
+        hasFilters = true
+        break;
+      }
+    }
+
+    if (hasFilters) {
+      newQueryCount = Object.keys(filterStrings)
+      .filter(key => filterStrings[key].length)
+      .reduce((acc, cur, idx) => {
+        const filterStr = filterStrings[cur]
+
+        if (filterStr.length) {
+          if (idx > 0) {
+            acc = `${acc} AND ${filterStr}`
+          } else {
+            acc = `${acc} ${filterStr}`
+          }
+        }
+
+        return acc
+      }, `${newQueryCount} WHERE `)
+    }
+
     this.props.dispatch(sendQuery(newQueryCount, { chartId: "count" }))
   }
 
@@ -81,6 +119,6 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ data, line }) => ({ data, line })
+const mapStateToProps = ({ data, line, bar }) => ({ data, line, bar })
 
 export default connect(mapStateToProps)(App)
