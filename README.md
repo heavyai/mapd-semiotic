@@ -1,6 +1,19 @@
 # MapD Semiotic Demo
 Demo / Investigation of using the [Semiotic](https://emeeks.github.io/semiotic/#/) charting library with MapD.
 
+## Findings
+What I discovered about Semiotic while building this (or whether or not it would make sense to incorporate Semiotic into Immerse)
+
+- Semiotic charts do not have "pretty" default styles, so you will need to write your own custom styles (using CSS and/or Semiotic's API) for anything you make in Semiotic
+
+- allows for a high level of customization but some things we need in Immerse still aren't available, such as having both a brush interaction and tooltip on a line chart
+
+- has a nice declarative API for composing charts
+
+- uses JSX and accepts props so plays nicely with React's API
+
+- decoupled from app or component level state, so plays well with Redux and the idea of unidirectional data flow from a single source of truth
+
 ## Develop
 
 ### Environment Variables
