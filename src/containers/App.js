@@ -5,8 +5,8 @@ import { connect } from "react-redux"
 import { sendQuery } from "../actions"
 import * as queries from "../common/queries"
 
-import { filterCount } from "../common/filters"
-import { countShouldFetchData } from "../common/shouldFetchData"
+import { filterCount, filterLine } from "../common/filters"
+import { countShouldFetchData, lineShouldFetchData } from "../common/shouldFetchData"
 
 import "../styles/App.css"
 import LineChart from "../components/LineChart"
@@ -51,8 +51,8 @@ class App extends Component {
           <LineChart
             chartId="line"
             chartsState={chartsState}
-            shouldFetchData={noop}
-            updateQuery={noop}
+            shouldFetchData={lineShouldFetchData}
+            updateQuery={filterLine}
             data={this.props.data.line.rows}
             dispatch={this.props.dispatch}
           />
