@@ -6,8 +6,8 @@ import * as queries from "../common/queries"
 
 // HOC component to wrap functional chart components in, in order to:
 // 1. fetch their data when they mount
-// 2. determine if their data should be updated when charting state changes
-// 3. destroy their data and state when they unmount (TO DO)
+// 2. determine if their data should be updated when another chart's state changes
+// 3. destroy their data and state (cleanup) when they unmount
 const ChartWrapper = (WrappedComponent) => {
   return class extends Component {
     static propTypes = {
@@ -33,8 +33,14 @@ const ChartWrapper = (WrappedComponent) => {
       }
     }
 
+    componentWillUnmount() {
+      // TODO: any necessary clean up
+    }
+
     render() {
-      return <WrappedComponent {...this.props} />
+      // don't pollute the wrapped component with un-necessary props
+      const { chartId, chartsState, shouldFetchData, updateQuery, ...rest } = this.props
+      return <WrappedComponent {...rest} />
     }
   }
 }

@@ -4,7 +4,6 @@ import { connect } from "react-redux"
 
 import { sendQuery } from "../actions"
 import * as queries from "../common/queries"
-import dataLayer from "../services/dataLayer"
 
 import { filterCount } from "../common/filters"
 import { countShouldFetchData } from "../common/shouldFetchData"
@@ -23,18 +22,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, data } = this.props
-
-    // kick off network requests for fetching each chart's data
-    for (let key in data) {
-      if (!data[key].rows && !data[key].isFetching && key !== "count") {
-        dispatch(sendQuery(queries[key], { chartId: `${key}` }))
-      }
-    }
+    const { dispatch } = this.props
+    // "total" technically is part of the "count" widget, but the ChartWrapper HOC
+    // only allows for a single chartId so currently can only execute 1 query per chart
+    dispatch(sendQuery(queries.total, { chartId: "total" }))
   }
 
   render() {
     const { line, bar, dispatch } = this.props
+    const chartsState = { line, bar }
+    const noop = () => {}
 
     return (
       <div className="App">
@@ -42,31 +39,37 @@ class App extends Component {
           <h1 className="App-title">Welcome to MapD Semiotic</h1>
           <CountWidget
             dispatch={dispatch}
-            chartId={"count"}
-            chartsState={{line, bar}}
+            chartId="count"
+            chartsState={chartsState}
             shouldFetchData={countShouldFetchData}
             updateQuery={filterCount}
             count={this.props.data.count.rows}
             total={this.props.data.total.rows}
           />
         </header>
-        {this.props.data.line.rows && (
+        <div className="charts-container">
           <LineChart
+            chartId="line"
+            chartsState={chartsState}
+            shouldFetchData={noop}
+            updateQuery={noop}
             data={this.props.data.line.rows}
             dispatch={this.props.dispatch}
           />
-        )}
-        {this.props.data.bar.rows && (
           <StackedBar
+            chartId="bar"
+            chartsState={chartsState}
+            shouldFetchData={noop}
+            updateQuery={noop}
             data={this.props.data.bar.rows}
             dispatch={this.props.dispatch}
           />
-        )}
+        </div>
       </div>
     )
   }
 }
 
-const mapStateToProps = ({ data, line, bar }) => ({ data, line, bar })
+const mapStateToProps = state => state
 
 export default connect(mapStateToProps)(App)

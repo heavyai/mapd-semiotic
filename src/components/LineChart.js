@@ -11,6 +11,7 @@ import throttle from 'lodash.throttle'
 
 import '../styles/chart-default-styles.css'
 import { lineBrushStart, lineBrushMove, lineBrushEnd } from "../actions/line"
+import withWrapper from "./ChartWrapper"
 
 window.schemeCategory10 = schemeCategory10
 
@@ -39,6 +40,10 @@ const dateFormatter = timeFormat('%b')
 const numberFormatter = format(".2s")
 
 const LineChart = ({ data, dispatch }) => {
+  if (!data) {
+    return null
+  }
+
   const airports = data.reduce((acc, cur) => {
     if (acc.indexOf(cur.key1) === -1 && cur.key1 !== "other") {
       acc.push(cur.key1)
@@ -109,4 +114,4 @@ LineChart.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({}))
 }
 
-export default LineChart
+export default withWrapper(LineChart)

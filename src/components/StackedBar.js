@@ -7,6 +7,7 @@ import { format } from 'd3-format'
 import '../styles/chart-default-styles.css'
 import '../styles/StackedBar.css'
 import { toggleBarPieceSelection } from "../actions"
+import withWrapper from "./ChartWrapper"
 
 const formatter = format(".4s")
 
@@ -26,6 +27,10 @@ const kvArray = airlines.reduce((acc, cur, i) => {
 const colorMap = new Map(kvArray)
 
 const StackedBar = ({ data, dispatch }) => {
+  if (!data) {
+    return null
+  }
+
   data = data.filter(d => d.key1 !== "undefined")
 
   function handleClick(datum) {
@@ -67,4 +72,4 @@ StackedBar.propTypes = {
   dispatch: PropTypes.func.isRequired
 }
 
-export default StackedBar
+export default withWrapper(StackedBar)
