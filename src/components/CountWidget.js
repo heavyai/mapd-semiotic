@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import sls from 'single-line-string'
 
+import withWrapper from "./ChartWrapper"
+
 const CountWidget = ({ count, total }) => (
   <div className="count-widget">
     <p>
@@ -17,4 +19,4 @@ CountWidget.propTypes = {
   total: PropTypes.arrayOf(PropTypes.shape({}))
 };
 
-export default CountWidget;
+export default withWrapper(CountWidget);

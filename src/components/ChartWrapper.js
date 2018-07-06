@@ -14,6 +14,7 @@ const ChartWrapper = (WrappedComponent) => {
       chartId: PropTypes.string.isRequired,
       chartsState: PropTypes.shape({}),
       shouldFetchData: PropTypes.func,
+      updateQuery: PropTypes.func,
       dispatch: PropTypes.func.isRequired
     }
 
@@ -24,17 +25,17 @@ const ChartWrapper = (WrappedComponent) => {
     }
 
     componentDidUpdate(prevProps) {
-      const { chartId, chartsState, shouldFetchData } = this.props
+      const { chartId, chartsState, shouldFetchData, updateQuery, dispatch } = this.props
       // determine if new data should be fetched based on state of charts
-      if (shouldFetchData(this.props, prevProps)) {
+      if (shouldFetchData(chartsState, prevProps.chartsState)) {
         const newQuery = updateQuery(chartsState)
         dispatch(sendQuery(newQuery, { chartId }))
       }
     }
 
-    return (
-      <WrappedComponent {...props} />
-    )
+    render() {
+      return <WrappedComponent {...this.props} />
+    }
   }
 }
 
