@@ -22,3 +22,14 @@ export const countShouldFetchData = (props, prevProps) => {
 
   return false
 }
+
+export const lineShouldFetchData = (props, prevProps) => {
+  const { bar: { selected } } = props
+  const { key0, key1 } = selected
+
+  if (key0 !== prevProps.bar.selected.key0 || key1 !== prevProps.bar.selected.key1) {
+    return true
+  }
+
+  return false
+}
