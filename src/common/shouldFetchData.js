@@ -19,4 +19,6 @@ export const countShouldFetchData = (props, prevProps) => {
   ) {
     return true
   }
+
+  return false
 }
