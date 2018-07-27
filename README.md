@@ -1,6 +1,8 @@
 # MapD Semiotic Demo
 Demo / Investigation of using the [Semiotic](https://emeeks.github.io/semiotic/#/) charting library with MapD.
 
+_[Read more about Semtiotic and the rationale behind creating yet another charting / data-viz library](https://medium.com/@Elijah_Meeks/semiotic-lessons-goals-841afceabb98)._
+
 ## Findings
 What I discovered about Semiotic while building this (or whether or not it would make sense to incorporate Semiotic into Immerse)
 
