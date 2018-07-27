@@ -1,6 +1,8 @@
 import dataLayer from "../services/dataLayer"
 import * as queries from "../common/queries"
 
+// this module contains functions for updating each charts SQL query
+
 const hasFilters = filterStrings => {
   for (let key in filterStrings) {
     if (filterStrings[key] && filterStrings[key].length) {
@@ -74,4 +76,28 @@ export const filterLine = (chartsState) => {
   }
 
   return newQueryLine
+}
+
+export const filterBar = (chartsState) => {
+  const { line } = chartsState
+  const { brush } = line
+
+  const filterStrings = dataLayer({ dateRange: brush })
+  let newQueryBar = `${queries.bar}`
+
+  if (hasFilters(filterStrings)) {
+    const [part1, part2] = newQueryBar.split(") GROUP")
+    newQueryBar = Object.keys(filterStrings)
+      .filter(key => filterStrings[key].length)
+      .reduce((acc, cur) => {
+        const filterStr = filterStrings[cur]
+        acc = `${acc} AND ${filterStr}`
+        return acc
+      }, `${part1}`)
+
+    newQueryBar = `${newQueryBar} ) GROUP ${part2}`
+    console.log(newQueryBar)
+  }
+
+  return newQueryBar
 }

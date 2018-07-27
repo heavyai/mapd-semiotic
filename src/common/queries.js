@@ -38,14 +38,16 @@ export const bar = sls`
   avg(arrdelay) AS val
   FROM ${table}
   WHERE (
-    dest_city IN (
-      SELECT dest_city
-      FROM ${table}
-      GROUP BY dest_city
-      ORDER BY avg(arrdelay) DESC
-      LIMIT 100
+    (
+      dest_city IN (
+        SELECT dest_city
+        FROM ${table}
+        GROUP BY dest_city
+        ORDER BY avg(arrdelay) DESC
+        LIMIT 100
+      )
+      OR dest_city IS NULL
     )
-    OR dest_city IS NULL
   )
   GROUP BY key0, key1
 `

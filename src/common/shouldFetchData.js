@@ -33,3 +33,21 @@ export const lineShouldFetchData = (props, prevProps) => {
 
   return false
 }
+
+export const barShouldFetchData = (props, prevProps) => {
+  const { line: { brush } } = props
+
+  if (brush && brush.length) {
+    if (!prevProps.line.brush) {
+      return true
+    } else if (
+      prevProps.line.brush &&
+      (brush[0] !== prevProps.line.brush[0] ||
+        brush[1] !== prevProps.line.brush[1])
+    ) {
+      return true
+    }
+  }
+
+  return false
+}

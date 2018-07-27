@@ -5,8 +5,12 @@ import { connect } from "react-redux"
 import { sendQuery } from "../actions"
 import * as queries from "../common/queries"
 
-import { filterCount, filterLine } from "../common/filters"
-import { countShouldFetchData, lineShouldFetchData } from "../common/shouldFetchData"
+import { filterCount, filterLine, filterBar } from "../common/filters"
+import {
+  countShouldFetchData,
+  lineShouldFetchData,
+  barShouldFetchData
+} from "../common/shouldFetchData"
 
 import "../styles/App.css"
 import LineChart from "../components/LineChart"
@@ -31,7 +35,6 @@ class App extends Component {
   render() {
     const { line, bar, dispatch } = this.props
     const chartsState = { line, bar }
-    const noop = () => {}
 
     return (
       <div className="App">
@@ -59,8 +62,8 @@ class App extends Component {
           <StackedBar
             chartId="bar"
             chartsState={chartsState}
-            shouldFetchData={noop}
-            updateQuery={noop}
+            shouldFetchData={barShouldFetchData}
+            updateQuery={filterBar}
             data={this.props.data.bar.rows}
             dispatch={this.props.dispatch}
           />
