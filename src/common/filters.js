@@ -96,7 +96,6 @@ export const filterBar = (chartsState) => {
       }, `${part1}`)
 
     newQueryBar = `${newQueryBar} ) GROUP ${part2}`
-    console.log(newQueryBar)
   }
 
   return newQueryBar
