@@ -16,6 +16,7 @@ import "../styles/App.css"
 import LineChart from "../components/LineChart"
 import CountWidget from "../components/CountWidget"
 import StackedBar from "../components/StackedBar"
+import ClearFilters from "../components/ClearFilters"
 
 class App extends Component {
   static propTypes = {
@@ -49,6 +50,7 @@ class App extends Component {
             count={this.props.data.count.rows}
             total={this.props.data.total.rows}
           />
+          <ClearFilters {...{dispatch, bar, line}} />
         </header>
         <div className="charts-container">
           <LineChart
