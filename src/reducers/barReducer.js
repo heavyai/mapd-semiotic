@@ -1,4 +1,7 @@
-import { BAR_PIECE_SELECTION_TOGGLE } from "../common/actionTypes"
+import {
+  BAR_PIECE_SELECTION_TOGGLE,
+  CLEAR_ALL_CHART_FILTERS
+} from "../common/actionTypes"
 
 const defaultState = {
   selected: {
@@ -34,6 +37,11 @@ export default function(state = defaultState, action) {
   switch (action.type) {
     case BAR_PIECE_SELECTION_TOGGLE:
       return handleUpdateSelected(state, action.payload)
+
+    case CLEAR_ALL_CHART_FILTERS:
+      return {
+        ...defaultState
+      }
 
     default:
       return state

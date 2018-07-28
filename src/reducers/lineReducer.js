@@ -1,7 +1,8 @@
 import {
   LINE_BRUSH_START,
   LINE_BRUSH_MOVE,
-  LINE_BRUSH_END
+  LINE_BRUSH_END,
+  CLEAR_ALL_CHART_FILTERS
 } from "../common/actionTypes"
 
 const defaultState = {
@@ -28,6 +29,11 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         brush: action.data
+      }
+
+    case CLEAR_ALL_CHART_FILTERS:
+      return {
+        ...defaultState
       }
 
     default:
